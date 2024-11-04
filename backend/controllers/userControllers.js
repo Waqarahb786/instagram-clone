@@ -115,3 +115,12 @@ export const getProfile = async(req,res)=>{
         console.log(error,"getProfile error")
     }
 }
+
+export const editProfile = async (req,res)=>{
+    try {
+        const userId = req.id;
+        let clodi
+    } catch (error) {
+        console.log(error,"editProfile error")
+    }
+}
