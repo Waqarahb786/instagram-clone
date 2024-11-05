@@ -151,3 +151,64 @@ export const editProfile = async (req,res)=>{
         console.log(error,"editProfile error")
     }
 }
+
+export const getSuggestedUsers = async(req,res)=>{
+  try {
+    const suggestedUsers = await User.find({_id:{$ne:req.id}}).select("-password");
+    if(!suggestedUsers){
+      return res.status(400).json({
+        message:'Currently do not have any users'
+      })
+    }
+
+    return res.status(200).json({
+      success:true,
+      users:suggestedUsers
+    })
+  } catch (error) {
+    console.log(error,'getSuggested api error')
+  }
+}
+
+export const followOrUnfollow = async(req,res)=>{
+  try {
+    const myId = req.id
+    const othersId = req.params.id
+    if(myId === othersId) {
+      return res.status(400).json({
+        message:'You cannot follow/unfollow yourself',
+        success:false
+      })
+    }
+    const user = await User.findById(myId)
+    const targetUser = await User.findById(othersId)
+
+    if(!user || !targetUser){
+      return res.status(400).json({
+        message:'User not found',
+        success:false
+      })
+    }
+
+    const isFollowing = user.following.includes(othersId)
+    if(isFollowing){
+      // for unfollow
+      await Promise.all([
+        User.updateOne({_id:myId},{$pull:{following:othersId}}),
+        User.updateOne({_id:othersId},{$pull:{followers:myId}})
+      ])
+
+      return res.status(200).json({message:'Unfollowed successfully',success:true})
+
+    }else{
+      // for follow
+      await Promise.all([
+        User.updateOne({_id:myId},{$push:{following:othersId}}),
+        User.updateOne({_id:othersId},{$push:{followers:myId}})
+      ])
+      return res.status(200).json({message:'followed successfully',success:true})
+    }
+  } catch (error) {
+    console.log(error,"followOrUnfollow api error")
+  }
+}
