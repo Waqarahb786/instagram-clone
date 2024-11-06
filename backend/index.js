@@ -3,6 +3,8 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import connectDB from './utils/db.js'
+import userRoute from './routes/userRouter.js'
+
 
 
 
@@ -27,6 +29,8 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 const PORT = process.env.PORT
+
+app.use("/api/v1/user",userRoute)
 
 
 

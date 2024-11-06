@@ -23,3 +23,5 @@ const isAuthenticated = async (req,res,next)=>{
         console.log(error,'middleware error')
     }
 }
+
+export default isAuthenticated
