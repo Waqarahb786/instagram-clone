@@ -2,6 +2,7 @@ import sharp from 'sharp'
 import cloudinary from '../utils/cloudinary.js';
 import { Post } from '../models/postModel.js';
 import { User } from '../models/userModel.js';
+import { Comment } from '../models/commentModel.js';
 
 
 export const addNewPost = async(req,res)=>{
@@ -117,7 +118,62 @@ export const addComment = async(req,res)=>{
     try {
         const postId=req.params.id;
         const user = req.id;
+        const {text} = req.body
+        const post = await Post.findById(postId)
+        if(!text) return res.status(400).json({message:'text is required',success:false})
+
+            const comment  = await Comment.create({
+                text,
+                author:user,
+                post:postId
+            }).populate({
+                path:'author',
+                select:"username, profilePicture"
+            });
+            post.comments.push(comment._id)
+            await post.save()
+
+            return res.status(201).json({
+                message:'Comment Added',
+                comment,
+                success:true
+            })
     } catch (error) {
-        
+        console.log(error,"addComment api error")
+    }
+}
+
+export const getCommentsOfPost = async(req,res)=>{
+    try {
+        const postId = req.params.id
+        const comments = await Comment.find({post:postId}).populate('author','username,profilePicture');
+        if(!comments) return res.status(404).json({message:'No comments found for this post',success:false});
+        return res.status(200).json({success:true,comments})
+    } catch (error) {
+        console.log(error,'getCommentsOfPost error')
+    }
+}
+
+export const deletePost = async(req,res)=>{
+    try {
+        const postId = req.params.id
+        const authorId = req.id
+        const post = await Post.findById(postId)
+        if(!post) return res.status(404).json({message:'Post not found',success:false})
+
+            if(post.author.toString()!== authorId) return res.status(403).json({message:'Unauthorized'});
+            await Post.findByIdAndUpdate(postId)
+
+            let user = await User.findById(authorId)
+            user.posts = user.posts.filter(id=>id.toString() !== postId);
+            await user.save()
+
+            await Comment.deleteMany({post:postId})
+            return res.status(200).json({
+                success:false,
+                message:'Post Deleted'
+            })
+    } catch (error) {
+        console.log(error,'delete post api error')
     }
 }
