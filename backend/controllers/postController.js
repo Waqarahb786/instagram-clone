@@ -82,3 +82,42 @@ export const getUserPost = async(req,res)=>{
         console.log(error,"getUserPost api error")
     }
 }
+
+export const likePost = async(req,res)=>{
+    try {
+        const user = req.id;
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if(!post) return res.status(404).json({message:'Post not found',success:false});
+        await post.updateOne({$addToSet:{likes:user}})
+        await post.save()
+
+        return res.status(200).json({message:'Post liked',success:true})
+    } catch (error) {
+        console.log(error,'likePost api error')
+    }
+}
+
+export const disLikePost = async(req,res)=>{
+    try {
+        const user = req.id;
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if(!post) return res.status(404).json({message:'Post not found',success:false});
+        await post.updateOne({$pull:{likes:user}})
+        await post.save()
+
+        return res.status(200).json({message:'Post disLiked',success:true})
+    } catch (error) {
+        console.log(error,'likePost api error')
+    }
+}
+
+export const addComment = async(req,res)=>{
+    try {
+        const postId=req.params.id;
+        const user = req.id;
+    } catch (error) {
+        
+    }
+}
