@@ -177,3 +177,26 @@ export const deletePost = async(req,res)=>{
         console.log(error,'delete post api error')
     }
 }
+
+export const bookMarkPost=async(req,res)=>{
+    try {
+        const postId = req.params.id;
+        const authorId=req.id
+        const post = await Post.findById(postId)
+        if(!post) return res.status(404).json({message:'Post not found',success:false})
+
+        const user = await User.findById(authorId)
+        if(user.bookmarks.includes(post._id)){
+            await user.updateOne({$pull:{bookmarks:post._id}})
+            await user.save();
+            return res.status(200).json({type:'unsaved',message:'Post removed from bookmark',success:true});
+        }else{
+            await user.updateOne({$addToSet:{bookmarks:post._id}});
+
+            await user.save()
+            return res.status(200).json({type:'saved',message:'Post bookmarked',success:true})
+        }
+    } catch (error) {
+        console.log(error,'book mark api error')
+    }
+}
