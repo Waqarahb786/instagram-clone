@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import connectDB from './utils/db.js'
 import userRoute from './routes/userRouter.js'
+import postRoute from './routes/postRoutes.js'
+import messageRoute from './routes/messageRoutes.js'
 
 
 
@@ -31,6 +33,8 @@ app.use(cors(corsOptions))
 const PORT = process.env.PORT
 
 app.use("/api/v1/user",userRoute)
+app.use("/api/v1/post",postRoute)
+app.use("/api/v1/message",messageRoute)
 
 
 
