@@ -6,9 +6,9 @@ import axios from "axios"
 import { toast } from "sonner"
 
 
-const Signup = () => {
+const Login = () => {
     const [input,setInput] = useState({
-        username:"",
+        
         email:"",
         password:""
     })
@@ -21,7 +21,7 @@ const Signup = () => {
 
     
 
-    const signupHandler =async(e)=>{
+    const loginHandler =async(e)=>{
         e.preventDefault()
 
         try {
@@ -35,7 +35,7 @@ const Signup = () => {
             if(res.data.success){
                 toast.success(res.data.message);
                 setInput({
-                    username:"",
+                    
                     email:"",
                     password:""
                 })
@@ -50,16 +50,12 @@ const Signup = () => {
     }
   return (
     <div className="flex items-center w-screen h-screen justify-center">
-        <form onSubmit={signupHandler} className="shadow-lg flex flex-col gap-5 p-8">
+        <form onSubmit={loginHandler} className="shadow-lg flex flex-col gap-5 p-8">
             <div className="my-4">
                 <h1 className="text-center font-bold text-xl">LOGO</h1>
-                <p className="text-sm text-center">Signup to see photos & videos from your friends</p>
+                <p className="text-sm text-center">Login to see photos & videos from your friends</p>
             </div>
-            <div>
-                <Label>Username</Label>
-                <Input type="text" name="username" value={input.username} onChange={changeEventHandler} className="focus-visible:ring-transparent my-2"/>
-            </div>
-
+            ``
             <div>
                 <Label>Email</Label>
                 <Input type="text" name="email" value={input.email} onChange={changeEventHandler} className="focus-visible:ring-transparent my-2"/>
@@ -69,10 +65,10 @@ const Signup = () => {
                 <Label>Password</Label>
                 <Input type="password" name="password" value={input.password} onChange={changeEventHandler} className="focus-visible:ring-transparent my-2"/>
             </div>
-            <Button type='submit'>Signup</Button>
+            <Button type='submit'>Login</Button>
         </form>
     </div>
   )
 }
 
-export default Signup
+export default Login
