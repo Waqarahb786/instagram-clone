@@ -5,6 +5,8 @@ import { Dialog, DialogContent, DialogHeader } from "./ui/dialog"
 import { Textarea } from "./ui/textarea"
 import { readFileAsDataURL } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
+import axios from "axios"
 
 
 const CreatePost = ({open,setOpen}) => {
@@ -23,12 +25,23 @@ const CreatePost = ({open,setOpen}) => {
         }
   }
   const createPostHandler=async(e)=>{
-    e.preventDefault()
+    const formData = new FormData()
+    formData.append("caption",caption)
+    if(imagePreview) formData.append("image",file)
     setLoading(true)
     try {
-      console.log(file)
+      const res= await axios.post('http://localhost:8000/api/v1/post/addpost',formData,{
+        headers:{
+          'Content-Type':'multipart/form-data'
+        },
+        withCredentials:true
+      });
+
+      if(res.data.success){
+        toast.success(res.data.message)
+      }
     } catch (error) {
-      console.log(error)
+      toast.error(error.response.data.message)
     }
     finally{
       setLoading(false)

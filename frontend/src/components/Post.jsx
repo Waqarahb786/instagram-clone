@@ -7,9 +7,10 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
 import { useState } from "react";
 
-const Post = () => {
+const Post = ({post}) => {
   const [text,setText] = useState("")
   const [open,setOpen] = useState(false)
+  console.log(post)
 
   const changeEventHandler=(e)=>{
     const inputText = e.target.value 
@@ -24,10 +25,10 @@ const Post = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src="" alt="post_image" />
+            <AvatarImage src={post?.author?.profilePicture} alt="post_image" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <h1>username</h1>
+          <h1>{post.author?.username}</h1>
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -51,7 +52,7 @@ const Post = () => {
       </div>
       <img
         className="rounded-sm my-2 w-full aspect-square object-cover"
-        src="https://images.unsplash.com/photo-1719937206220-f7c76cc23d78?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8"
+        src={post.image}
         alt="image"
       />
       
@@ -63,12 +64,12 @@ const Post = () => {
           </div>
           <Bookmark className="cursor-pointer hover:text-gray-600"/>
         </div>
-       <span className="font-medium block mb-2">1k likes</span>
+       <span className="font-medium block mb-2">{post.likes.length} likes</span>
        <p >
-        <span className="font-medium mr-2">username</span>
-        caption
+        <span className="font-medium mr-2">{post?.author?.username}</span>
+        {post.caption}
        </p>
-       <span onClick={()=>setOpen(true)} className="cursor-pointer text-sm text-gray-400">View all 10 comments</span>
+       <span onClick={()=>setOpen(true)} className="cursor-pointer text-sm text-gray-400">View all {post.comments.length} comments</span>
        <CommentDialog open={open} setOpen={setOpen}/>
        <div className="flex items-center justify-between">
         <input onChange={changeEventHandler} value={text} type="text" placeholder="Add a comment..." className="outline-none text-sm w-full"/>
