@@ -162,7 +162,7 @@ export const deletePost = async(req,res)=>{
         if(!post) return res.status(404).json({message:'Post not found',success:false})
 
             if(post.author.toString()!== authorId) return res.status(403).json({message:'Unauthorized'});
-            await Post.findByIdAndUpdate(postId)
+            await Post.findByIdAndDelete(postId)
 
             let user = await User.findById(authorId)
             user.posts = user.posts.filter(id=>id.toString() !== postId);
@@ -170,7 +170,7 @@ export const deletePost = async(req,res)=>{
 
             await Comment.deleteMany({post:postId})
             return res.status(200).json({
-                success:false,
+                success:true,
                 message:'Post Deleted'
             })
     } catch (error) {
