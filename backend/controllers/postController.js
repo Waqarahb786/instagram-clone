@@ -66,13 +66,13 @@ export const getAllPost = async (req,res)=>{
 export const getUserPost = async(req,res)=>{
     try {
         const authorId=req.id
-        const posts=await Post.find({author:authorId}).sort({createdAt:-1}).populate({path:'author',select:'username, profilePicture'})
+        const posts=await Post.find({author:authorId}).sort({createdAt:-1}).populate({path:'author',select:'username profilePicture'})
         .populate({
             path:'comments',
             sort:{createdAt:-1},
             populate:{
                 path:'author',
-                select:'username, profilePicture'
+                select:'username profilePicture'
             }
                 });
                 return res.status(200).json({
@@ -126,10 +126,12 @@ export const addComment = async(req,res)=>{
                 text,
                 author:user,
                 post:postId
-            }).populate({
+            })
+
+            await comment.populate({
                 path:'author',
-                select:"username, profilePicture"
-            });
+                select:"username profilePicture"
+            })
             post.comments.push(comment._id)
             await post.save()
 
