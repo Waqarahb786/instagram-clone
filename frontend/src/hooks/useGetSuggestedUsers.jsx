@@ -6,6 +6,7 @@ import { setSuggestedUsers } from "@/redux/authSlice"
 
 const useGetSuggestedUsers=()=>{
     const dispatch = useDispatch()
+    
     useEffect(()=>{
         const fetchSuggestedUsers = async()=>{
             try {
